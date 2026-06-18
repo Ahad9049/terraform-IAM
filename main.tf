@@ -51,3 +51,8 @@ resource "aws_iam_role_policy_attachment" "role_policy_attachment" {
   role       = aws_iam_role.Ec2-role.name
   policy_arn = each.value
 }
+# create instance profile
+resource "aws_iam_instance_profile" "instance_profile" {
+  name = "ec2-instance-profile"
+  role = aws_iam_role.Ec2-role.name
+}
