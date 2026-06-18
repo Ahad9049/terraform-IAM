@@ -42,3 +42,12 @@ resource "aws_iam_role" "Ec2-role" {
   })
 
 }
+# Attach policy to role
+resource "aws_iam_role_policy_attachment" "role_policy_attachment" {
+  for_each = toset([
+    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+    "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+  ])
+  role       = aws_iam_role.Ec2-role.name
+  policy_arn = each.value
+}
