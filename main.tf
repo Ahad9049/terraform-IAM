@@ -1,6 +1,4 @@
-provider "aws" {
-  region = "us-east-1"
-}
+
 # IAM User Creation
 resource "aws_iam_user" "user" {
   name = "ahad-tf"
@@ -16,16 +14,55 @@ resource "aws_iam_user_group_membership" "membership" {
   user   = aws_iam_user.user.name
   groups = [aws_iam_group.group.name]
 }
-# Attach policy to group
-resource "aws_iam_group_policy_attachment" "group_policy_attachment" {
-  for_each = toset([
-    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-    "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
-  ])
-  group      = aws_iam_group.group.name
-  policy_arn = each.value
+resource "aws_iam_policy" "ec2_custom_policy" {
+  name        = "EC2CustomPolicy"
+  description = "Allow viewing, starting and stopping EC2 instances"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [
+      {
+        Effect = "Allow"
+
+        Action = [
+          "ec2:DescribeInstances",
+          "ec2:DescribeInstanceStatus",
+          "ec2:DescribeTags",
+          "ec2:DescribeVolumes"
+        ]
+
+        Resource = "*"
+      },
+
+      {
+        Effect = "Allow"
+
+        Action = [
+          "ec2:StartInstances",
+          "ec2:StopInstances"
+        ]
+
+        Resource = "*"
+      }
+    ]
+  })
 }
-#IAM ROle Creation
+# Attach custom policy to group
+resource "aws_iam_group_policy_attachment" "custom_group_policy_attachment" {
+  group      = aws_iam_group.group.name
+  policy_arn = aws_iam_policy.ec2_custom_policy.arn
+}
+# Attach policy to group
+# resource "aws_iam_group_policy_attachment" #"group_policy_attachment" {
+#   for_each = toset([
+#     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+#     "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+#   ])
+#   group      = aws_iam_group.group.name
+#   policy_arn = each.value
+# }
+# #IAM ROle Creation
 resource "aws_iam_role" "Ec2-role" {
   name = "EC2-role"
   assume_role_policy = jsonencode({
@@ -42,15 +79,20 @@ resource "aws_iam_role" "Ec2-role" {
   })
 
 }
-# Attach policy to role
-resource "aws_iam_role_policy_attachment" "role_policy_attachment" {
-  for_each = toset([
-    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-    "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
-  ])
+# Attach custom policy to role
+resource "aws_iam_role_policy_attachment" "custom_role_policy_attachment" {
   role       = aws_iam_role.Ec2-role.name
-  policy_arn = each.value
+  policy_arn = aws_iam_policy.ec2_custom_policy.arn
 }
+# Attach policy to role
+# resource "aws_iam_role_policy_attachment" "role_policy_attachment" {
+#   for_each = toset([
+#     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+#     "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+#   ])
+#   role       = aws_iam_role.Ec2-role.name
+#   policy_arn = each.value
+# }
 # create instance profile
 resource "aws_iam_instance_profile" "instance_profile" {
   name = "ec2-instance-profile"
