@@ -57,7 +57,7 @@ terraform apply
 For a specific environment:
 
 ```bash
-terraform apply -var-file="terraform.tfvars"
+terraform apply 
 ```
 
 ## Outputs
