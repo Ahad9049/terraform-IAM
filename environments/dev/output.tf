@@ -5,6 +5,9 @@ output "iam_user_name" {
 output "iam_group_name" {
   value = module.iam.iam_group_name
 }
+output "iam_role_name" {
+  value = module.iam.iam_role_name
+}
 output "aws_iam_instance_profile_name" {
   value = module.iam.aws_iam_instance_profile_name
 }

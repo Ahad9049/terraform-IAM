@@ -4,4 +4,5 @@ module "iam" {
   group_name   = var.iam_group_name
   role_name    = var.iam_role_name
   iam_policies = var.iam_policies
+  instance_profile_name = var.instance_profile_name
 }

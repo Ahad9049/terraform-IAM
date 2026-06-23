@@ -15,7 +15,7 @@ variable "iam_policies" {
   type        = list(string)
 
 }
-variable "ec2_profile_name" {
+variable "instance_profile_name" {
   description = "The name of the EC2 instance profile to create"
   type        = string
 }
