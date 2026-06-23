@@ -22,3 +22,7 @@ variable "iam_policies" {
     "arn:aws:iam::aws:policy/AmazonS3FullAccess", "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
   ]
 }
+variable "instance_profile_name" {
+  type = string
+  default = "ec2-profile"
+}

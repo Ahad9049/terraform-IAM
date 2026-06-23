@@ -15,3 +15,6 @@ output "secret_access_key" {
   value = aws_iam_access_key.access_key.secret
   sensitive = true
 }
+output "iam_role_name" {
+  value = aws_iam_role.Ec2-role.name
+}

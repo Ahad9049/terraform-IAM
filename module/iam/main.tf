@@ -89,10 +89,14 @@ resource "aws_iam_role_policy_attachment" "role_policy_attachment" {
 }
 # create instance profile
 resource "aws_iam_instance_profile" "instance_profile" {
-  name = "ec2-instance-profile"
+  name = var.instance_profile_name
   role = aws_iam_role.Ec2-role.name
 }
 # Create access key for user
 resource "aws_iam_access_key" "access_key" {
   user = aws_iam_user.user.name
 }
+# resource "aws_iam_instance_profile" "instance_profile" {
+#   name = var.instance_profile_name
+#   role = aws_iam_role.role.name
+# }
